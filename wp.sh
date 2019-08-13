@@ -59,3 +59,6 @@ yarn install
 
 # Activate the theme
 wp theme activate $THEMENAME
+
+# Add Gulp as global
+sudo npm i -g gulp@^3.9.1
