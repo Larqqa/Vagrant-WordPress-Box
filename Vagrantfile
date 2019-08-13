@@ -16,9 +16,13 @@ Vagrant.configure("2") do |config|
 
   # This host needs to match the wp localhost port
   config.vm.network "forwarded_port", guest: 8080, host: 8080
+
+  # These match needed ports for BrowserSync
   config.vm.network "forwarded_port", guest: 3000, host: 3000
   config.vm.network "forwarded_port", guest: 3001, host: 3001
   config.vm.network "forwarded_port", guest: 3002, host: 3002
+
+  # Fallback for using port 80
   config.vm.network "forwarded_port", guest: 80, host: 3003
 
   # Synced folder

@@ -1,5 +1,11 @@
 # WordPress Box using Aucor Starter theme
 [Aucor Starter theme](https://github.com/aucor/aucor-starter/tree/master)
+
+To install or reinstall the Box, run
+```
+sh install_VBox.sh
+```
+
 ## What
 This is a Vagrant box for installing a simple LAMP stack & WordPress. The WordPress runs the Aucor Starter theme as a default theme
 ## Why
