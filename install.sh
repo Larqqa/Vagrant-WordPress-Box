@@ -71,8 +71,15 @@ default_url="http://localhost:8080"
 default_author="Aucor Oy"
 default_authorurl="https://www.aucor.fi"
 
-echo "Set your MySQL database Password"
+echo "Set your MySQL database Password. (Default: $default_pass)"
 read password
+
+# use default if empty
+if test -n "$password"; then
+  echo ""
+else
+  password=$default_pass
+fi
 
 echo "Set the admin name. (Default: $default_admin)"
 read admin_name
@@ -148,6 +155,7 @@ while true; do
 read -p "Is this correct?
 MySQL password: $password
 admin:          $admin_name
+admin password: $admin_pass
 Themename:      $name
 ID:             $id
 URL:            $url

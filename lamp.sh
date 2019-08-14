@@ -37,7 +37,7 @@ apt-get -qq update
 
 echo -e "\n ---- 7 / 12 Installing PHP & mods ----"
 # Install PHP & mods
-apt-get install -y php7.2 libapache2-mod-php7.2 php7.2-common php7.2-zip php7.2-mysql >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+apt-get install -y php7.3 libapache2-mod-php7.3 php7.3-common php7.3-zip php7.3-mysql >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
 
 echo -e "\n ---- 8 / 12 Adding Apache rules ----"
