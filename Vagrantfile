@@ -46,7 +46,9 @@ Vagrant.configure("2") do |config|
     "ID" => ENV["ID"],
     "URL" => ENV["URL"],
     "AUTHOR" => ENV["AUTHOR"],
-    "AUTHOR_URL" => ENV["AUTHOR_URL"]
+    "AUTHOR_URL" => ENV["AUTHOR_URL"],
+    "ADMIN_NAME" => ENV["ADMIN_NAME"],
+    "ADMIN_PASSWD" => ENV["ADMIN_PASSWD"]
   }
 
 end

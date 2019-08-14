@@ -18,7 +18,7 @@ echo -e "\n ---- 3 / 11 Installing WordPress ----"
 # Install WP
 wp core config --dbuser=root --dbpass=$DBPASSWD --dbname=WordPress  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 wp db create  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-wp core install --url=$URL --title=Blog --admin_user=admin --admin_password=$DBPASSWD --admin_email=joku@jotain.com  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+wp core install --url=$URL --title=Blog --admin_user=$ADMIN_NAME --admin_password=$ADMIN_PASSWD --admin_email=joku@jotain.com  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
 echo -e "\n ---- 4 / 11 Installing WordPress plugins ----"
 # Install Aucor Core plugin

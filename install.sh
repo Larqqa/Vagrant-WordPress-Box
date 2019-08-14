@@ -63,6 +63,8 @@ done
 #:::::: Set some variables :::::#
 
 # Aucor Starter Defaults
+default_admin="admin"
+default_pass="admin_123"
 default_name="Aucor Starter"
 default_id="aucor_starter"
 default_url="http://localhost:8080"
@@ -71,6 +73,26 @@ default_authorurl="https://www.aucor.fi"
 
 echo "Set your MySQL database Password"
 read password
+
+echo "Set the admin name. (Default: $default_admin)"
+read admin_name
+
+# use default if empty
+if test -n "$admin_name"; then
+  echo ""
+else
+  admin_name=$default_admin
+fi
+
+echo "Set the admin password. (Default: $default_pass)"
+read admin_pass
+
+# use default if empty
+if test -n "$admin_pass"; then
+  echo ""
+else
+  admin_pass=$default_pass
+fi
 
 echo "Set the name of your theme. (Default: $default_name)"
 read name
@@ -125,6 +147,7 @@ fi
 while true; do
 read -p "Is this correct?
 MySQL password: $password
+admin:          $admin_name
 Themename:      $name
 ID:             $id
 URL:            $url
@@ -141,6 +164,8 @@ done
 
 # Set Exports
 export DBPASSWD=$password
+export ADMIN_NAME=$admin_name
+export ADMIN_PASSWD=$admin_pass
 export THEMENAME=$name
 export id=$id
 export URL=$url
