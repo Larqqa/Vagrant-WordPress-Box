@@ -2,13 +2,6 @@
 
 echo -e "<::::: INSTALLING WORDPRESS :::::>"
 
-# Variables #
-
-# Needs to be the same as in install.sh
-DBPASSWD=admin_123
-THEMENAME=SandBox
-URL=http://localhost:8080
-
 echo -e "\n ---- 1 / 10 Changing Apache port to 8080 ----"
 # Change apache port to 8080
 sudo sed -i 's/80/8080/' /etc/apache2/ports.conf
@@ -50,10 +43,10 @@ echo -e "\n ---- 6 / 10 Running Aucor Starter Setup ----"
 cd /var/www/$THEMENAME
 sudo sh setup.sh >> /var/www/html/vm_build.log 2>&1 << END
 $THEMENAME
-snd
+$ID
 $URL
-asd
-asd.fi
+$AUTHOR
+$AUTHOR_URL
 y
 END
 
@@ -63,17 +56,18 @@ sudo mv /var/www/$THEMENAME /var/www/html/wp-content/themes/
 
 echo -e "\n ---- 8 / 10 Installing the themes npm packages ----"
 # Install packages
-# --no-bin-links is used for some error with symlinks and some acorn module
-# Thorws error without it 
+# Using --no-bin-links is required for Yarn install to work in VBox on Windows  
+# For needed commands ( like Gulp ) you need to install the packages globally
 cd /var/www/html/wp-content/themes/$THEMENAME
 yarn install --no-bin-links >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
-echo -e "\n ---- 9 / 10 Activating the theme ----"
+echo -e "\n ---- 9 / 10 Installing Gulp globally ----"
+# Install Gulp as global
+# Needed for dev environment in Aucor starter theme
+sudo npm i -g gulp@^3.9.1  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+
+echo -e "\n ---- 10 / 10 Activating the theme ----"
 # Activate the theme
 wp theme activate $THEMENAME  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-
-echo -e "\n ---- 10 / 10 Installing Gulp globally ----"
-# Add Gulp as global
-sudo npm i -g gulp@^3.9.1  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
 echo -e "<::::: WORDPRESS INSTALLED SUCCESFULLY :::::>"

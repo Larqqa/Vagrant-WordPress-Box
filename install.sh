@@ -2,13 +2,12 @@
 
 echo -e "<::::: INSTALLING LAMP STACK :::::>"
 
+echo -e "You can find the installation logs in data/vm_build.log"
+
 echo -e "\n ---- 1 / 12 Updating Ubuntu ----"
 # Update Ubuntu
 apt-get -qq update
 apt-get -qq upgrade
-
-# Variables
-DBPASSWD=admin_123
 
 echo -e "\n ---- 2 / 12 Setting MySQL & PHPMyAdmin settings ----"
 # Set MySQL params

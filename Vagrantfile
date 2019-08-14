@@ -31,11 +31,22 @@ Vagrant.configure("2") do |config|
   # Provisions #
 
   # Run commands as root
-  config.vm.provision "shell", path: "install.sh"
+  config.vm.provision "shell", path: "install.sh",
+  env: {
+    "DBPASSWD" => ENV["DBPASSWD"]
+  }
 
   # Run commands as user
   # This is for running WordPress installation
   # With Aucor starter theme and Aucor core plugin
-  config.vm.provision "shell", path: "wp.sh", privileged: false
+  config.vm.provision "shell", path: "wp.sh", privileged: false,
+  env: {
+    "DBPASSWD" => ENV["DBPASSWD"],
+    "THEMENAME" => ENV["THEMENAME"],
+    "ID" => ENV["ID"],
+    "URL" => ENV["URL"],
+    "AUTHOR" => ENV["AUTHOR"],
+    "AUTHOR_URL" => ENV["AUTHOR_URL"]
+  }
 
 end
