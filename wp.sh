@@ -70,4 +70,7 @@ echo -e "\n ---- 10 / 10 Activating the theme ----"
 # Activate the theme
 wp theme activate $THEMENAME  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
+# Add the theme as default path to speed up SSH login
+echo "cd /var/www/html/wp-config/themes/$THEMENAME" >> /home/vagrant/.bashrc
+
 echo -e "<::::: WORDPRESS INSTALLED SUCCESFULLY :::::>"

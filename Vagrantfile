@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
   # Provisions #
 
   # Run commands as root
-  config.vm.provision "shell", path: "install.sh",
+  config.vm.provision "shell", path: "lamp.sh",
   env: {
     "DBPASSWD" => ENV["DBPASSWD"]
   }

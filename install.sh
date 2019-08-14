@@ -1,75 +1,161 @@
 #! /usr/bin/env bash
+clear
 
-echo -e "<::::: INSTALLING LAMP STACK :::::>"
+BOLD=$(tput bold)
+GREEN=$(tput setaf 2)
+WHITE=$(tput setaf 7)
+RESET=$(tput sgr0)
 
-echo -e "You can find the installation logs in data/vm_build.log"
+echo "${WHITE}
+                   wwwwwwwwwwwwwwwwwwwwww
+               wwwwwwwww            wwwwwwwww
+            wwwwww   wwwwwwwwwwwwwwwwww   wwwwww
+          wwww   wwwwwwwwwwwwwwwwwwwwwwwwww   wwww
+        wwww  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww  wwww
+      wwww  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww   wwww
+    wwww  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww        wwww
+   www  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww           www
+  www          wwwwwwwwww         wwwwwwwww            www
+ www  w       wwwwwwwwwwww       wwwwwwwwwww        ww  www
+ ww  www       wwwwwwwwwwww       wwwwwwwwwwww      www  ww
+www  www       wwwwwwwwwwwww       wwwwwwwwwwww     www  www
+ww  wwwww       wwwwwwwwwwww       wwwwwwwwwwww     wwww  ww
+ww  wwwwww       wwwwwwwwwwww       wwwwwwwwwwww   wwwww  ww
+ww  wwwwwww      wwwwwwwwwwwww       wwwwwwwwwww  wwwwww  ww
+ww  wwwwwww       wwwwwwwwwww        wwwwwwwwwww  wwwwww  ww
+ww  wwwwwwww       wwwwwwwww  w       wwwwwwwww  wwwwwww  ww
+ww  wwwwwwwww      wwwwwwwww www       wwwwwwww wwwwwwww  ww
+www  wwwwwwww       wwwwwww wwwww      wwwwwww  wwwwwww  www
+ ww  wwwwwwwww       wwwww  wwwwww      wwwww  wwwwwwww  ww
+ www  wwwwwwwww      wwwww wwwwwww       wwww wwwwwwww  www
+  www  wwwwwwwww      www wwwwwwwww      www  wwwwwww  www
+   www  wwwwwwww       w wwwwwwwwwww      ww wwwwwww  www
+    wwww  wwwwwww        wwwwwwwwwww        wwwwww  wwww
+      wwww  wwwwww      wwwwwwwwwwwww      wwwww  wwww
+        wwww  wwwww    wwwwwwwwwwwwwww     www  wwww
+          wwww   ww    wwwwwwwwwwwwwwww       wwww
+            wwwwww    wwwwwwwwwwwwwwwww   wwwwww
+               wwwwwwwww            wwwwwwwww
+                   wwwwwwwwwwwwwwwwwwwwww
+${RESET}"
+echo "${BOLD}${GREEN}
+                    Vagrant WordPress Box
+${RESET}"
 
-echo -e "\n ---- 1 / 12 Updating Ubuntu ----"
-# Update Ubuntu
-apt-get -qq update
-apt-get -qq upgrade
+echo "${WHITE}
+You are about to install a Vagrant Box for running WordPress.
+${RESET}"
 
-echo -e "\n ---- 2 / 12 Setting MySQL & PHPMyAdmin settings ----"
-# Set MySQL params
-debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
+# Make sure user is running shell as administrator
+echo "${BOLD}
+The Scripts should be ran with administrator priviliges to avoid install errors
+${RESET}"
 
-# Set PHPMyAdmin params
-debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none"
+while true; do
+  read -p "Are you running this as Administarator? [ y / N ] " check
+  case $check in
+    [Yy]* ) echo "Starting the installation!" && break;;
+    [Nn]* ) echo "Remember to run as admin!" && exit;;
+    * ) echo "Please answer y or n";;
+  esac
+done
 
-echo -e "\n ---- 3 / 12 Installing Apache, MySQL & PHPMyAdmin ----"
-apt-get install -y mysql-server phpmyadmin apache2 >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+#:::::: Set some variables :::::#
 
-echo -e "\n ---- 4 / 12 Installing some other packages ----"
-apt-get install -y git curl build-essential python-software-properties >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+# Aucor Starter Defaults
+default_name="Aucor Starter"
+default_id="aucor_starter"
+default_url="http://localhost:8080"
+default_author="Aucor Oy"
+default_authorurl="https://www.aucor.fi"
 
-echo -e "\n ---- 5 / 12 Enabling mod-rewrite ----"
-# Enable Apache Mods
-a2enmod rewrite >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+echo "Set your MySQL database Password"
+read password
 
-echo -e "\n ---- 6 / 12 Adding Ondrej's PPA ----"
-# Add Onrej PPA Repo & update. Needed for PHP 7.2 installation
-LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-apt-get -qq update
+echo "Set the name of your theme. (Default: $default_name)"
+read name
 
-echo -e "\n ---- 7 / 12 Installing PHP & mods ----"
-# Install PHP & mods
-apt-get install -y php7.2 libapache2-mod-php7.2 php7.2-common php7.2-zip php7.2-mysql >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+# use default if empty
+if test -n "$name"; then
+  echo ""
+else
+  name=$default_name
+fi
 
+echo "Set the id of your theme. (Default: $default_id)"
+read id
 
-echo -e "\n ---- 8 / 12 Adding Apache rules ----"
-# Allow Apache override to all
-sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+# use default if empty
+if test -n "$id"; then
+  echo ""
+else
+  id=$default_id
+fi
 
-# Turn on PHP errors
-sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
-sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
+echo "Set the dev url of your theme. (Default: $default_url)"
+read url
 
-echo -e "\n ---- 9 / 12 Restarting Apache ----"
-# Restart Apache
-service apache2 restart >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+# use default if empty
+if test -n "$url"; then
+  echo ""
+else
+  url=$default_url
+fi
 
-echo -e "\n ---- 10 / 12 Installing WP-CLI ----"
-# Install WP-CLI
-curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-chmod +x wp-cli.phar >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-mv wp-cli.phar /usr/local/bin/wp >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+echo "Set the author of your theme. (Default: $default_author)"
+read author
 
-echo -e "\n ---- 11 / 12 Installing NodeJS & NPM ----"
-# Install NodeJS 10.x
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-apt install -y nodejs >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+# use default if empty
+if test -n "$author"; then
+  echo ""
+else
+  author=$default_author
+fi
 
-echo -e "\n ---- 12 / 12 Installing Yarn ----"
-# Install yarn
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+echo "Set the url of your author. (Default: $default_authorurl)"
+read authorurl
 
-apt-get -qq update
-apt-get install yarn >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
+# use default if empty
+if test -n "$authorurl"; then
+  echo ""
+else
+  authorurl=$default_authorurl
+fi
 
-echo -e "<::::: LAMP STACK INSTALLED SUCCESFULLY :::::>"
+while true; do
+read -p "Is this correct?
+MySQL password: $password
+Themename: $name
+ID: $id
+URL: $url
+Author: $author
+Author URL: $authorurl
+Proceed to install? [y/N]
+" yn
+  case $yn in
+    [Yy]* ) break;;
+    [Nn]* ) exit;;
+    * ) echo "Please answer y or n.";;
+  esac
+done
+
+# Set Exports
+export DBPASSWD=$password
+export THEMENAME=$name
+export id=$id
+export URL=$url
+export AUTHOR=$author
+export AUTHOR_URL=$authorurl
+
+# Destroy the old Box
+vagrant destroy << END
+y
+END
+
+# Remove data folder
+rm -rf data
+
+clear
+
+# Run Vagrant Box
+vagrant up
