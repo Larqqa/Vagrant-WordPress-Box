@@ -4,9 +4,8 @@ echo -e "<::::: INSTALLING LAMP STACK :::::>"
 
 echo -e "You can find the installation logs in data/vm_build.log"
 
-echo -e "\n ---- 1 / 12 Updating Ubuntu ----"
+echo -e "\n ---- 1 / 12 Updating upgrading Ubuntu ----"
 apt-get update >> /var/www/html/vm_build.log 2>&1
-echo -e "\n ---- 1 / 12 Upgrading Ubuntu ----"
 apt-get -y upgrade >> /var/www/html/vm_build.log 2>&1
 
 echo -e "\n ---- 2 / 12 Setting MySQL & PHPMyAdmin settings ----"
@@ -24,7 +23,7 @@ debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multisel
 echo -e "\n ---- 3 / 12 Installing Apache, MySQL & PHPMyAdmin ----"
 apt-get install -y mysql-server phpmyadmin apache2 >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
-echo -e "\n ---- 4 / 12 Installing some other packages ----"
+echo -e "\n ---- 4 / 12 Installing some packages ----"
 apt-get install -y git curl build-essential python-software-properties >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
 echo -e "\n ---- 5 / 12 Enabling mod-rewrite ----"
