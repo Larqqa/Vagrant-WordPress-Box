@@ -125,11 +125,11 @@ fi
 while true; do
 read -p "Is this correct?
 MySQL password: $password
-Themename: $name
-ID: $id
-URL: $url
-Author: $author
-Author URL: $authorurl
+Themename:      $name
+ID:             $id
+URL:            $url
+Author:         $author
+Author URL:     $authorurl
 Proceed to install? [y/N]
 " yn
   case $yn in
