@@ -25,18 +25,18 @@ echo -e "\n ---- 4 / 11 Installing WordPress plugins ----"
 wp plugin install advanced-custom-fields wordpress-seo redirection aucor-core --activate  >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
 echo -e "\n ---- 5 / 11 Removing Hello Dolly plugin ----"
-# Install Aucor Core plugin
+# Remove Hello Dolly plugin
 wp plugin delete hello >> /var/www/html/vm_build.log 2>&1  || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
 
 echo -e "\n ---- 6 / 11 Getting Aucor Starter theme ----"
 # Get Aucor Starter theme in to folder that is not in sync
 cd /var/www/
 sudo git clone https://github.com/aucor/aucor-starter.git $THEMENAME  >> /var/www/html/vm_build.log 2>&1 || { echo 'Something went wrong, check the vm_build.log in ./data' ; exit 1; }
-sudo rm -rf .git
 
 # Run Aucor Starter setup
 echo -e "\n ---- 7 / 11 Running Aucor Starter Setup ----"
 cd /var/www/$THEMENAME
+sudo rm -rf .git
 sudo sh setup.sh >> /var/www/html/vm_build.log 2>&1 << END
 $THEMENAME
 $ID
